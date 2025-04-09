@@ -1,3 +1,4 @@
+from store.models.product import ProductModel
 import pymongo  # type: ignore
 from typing import List
 from uuid import UUID
@@ -14,10 +15,11 @@ class ProductUsecase:
         self.collection = self.database.get_collection("products")
 
     async def create(self, body: ProductIn) -> ProductOut:
-        product = ProductOut(**body.model_dump())
-        await self.collection.insert_one(product.model_dump())
+        product_model = ProductModel(**body.model_dump())
 
-        return product
+        await self.collection.insert_one(product_model.model_dump())
+
+        return ProductOut(**product_model.model_dump())
 
     async def get(self, id: UUID) -> ProductOut:
         result = await self.collection.find_one({"id": id})
@@ -38,6 +40,16 @@ class ProductUsecase:
         )
 
         return ProductUpdateOut(**result)
+
+    async def delete(self, id: UUID) -> bool:
+        product = await self.collection.find_one({"id": id})
+
+        if not product:
+            raise NotFoundException(message=f"Product not found with filter: {id}")
+
+        result = await self.collection.delete_one({"id": id})
+
+        return True if result.deleted_count > 0 else False
 
 
 product_usecase = ProductUsecase()
