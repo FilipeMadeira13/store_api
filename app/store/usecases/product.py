@@ -1,3 +1,5 @@
+from datetime import datetime
+from fastapi import HTTPException, status
 from store.models.product import ProductModel
 import pymongo
 from typing import List
@@ -33,11 +35,22 @@ class ProductUsecase:
         return [ProductOut(**item) async for item in self.collection.find()]
 
     async def update(self, id: UUID, body: ProductUpdate) -> ProductUpdateOut:
+        update_data = body.model_dump(exclude_none=True)
+
+        update_data["updated_at"] = datetime.now()
+
         result = await self.collection.find_one_and_update(
             filter={"id": id},
-            update={"$set": body.model_dump(exclude_none=True)},
+            update={"$set": update_data},
             return_document=pymongo.ReturnDocument.AFTER,
         )
+
+        # Cria uma condição caso o resultado seja None
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Product not found with filter: {id}",
+            )
 
         return ProductUpdateOut(**result)
 

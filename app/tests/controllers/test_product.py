@@ -76,6 +76,7 @@ async def test_controller_patch_should_return_success(
         f"{products_url}{product_inserted.id}", json={"price": "7500"}
     )
 
+    content_without_changes = response.json()
     content = response.json()
     del content["created_at"]
     del content["updated_at"]
@@ -87,6 +88,21 @@ async def test_controller_patch_should_return_success(
         "quantity": 10,
         "price": "7500",
         "status": True,
+    }
+    assert (
+        content_without_changes["created_at"] != content_without_changes["updated_at"]
+    )
+
+
+# Teste de patch para dado não encontrado
+async def test_controller_patch_should_return_not_found(client, products_url):
+    response = await client.patch(
+        f"{products_url}b902a8ad-9810-4852-8196-376cb05cc7d4", json={"price": "7500"}
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {
+        "detail": "Product not found with filter: b902a8ad-9810-4852-8196-376cb05cc7d4"
     }
 
 
