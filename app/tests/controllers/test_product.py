@@ -1,7 +1,7 @@
 from typing import List
 
 import pytest
-from tests.factories import product_data
+from tests.factories import invalid_product_data, product_data
 from fastapi import status
 
 
@@ -20,6 +20,16 @@ async def test_controller_create_should_return_success(client, products_url):
         "price": "8500",
         "status": True,
     }
+
+
+# Criando teste para capturar erro de inserção
+async def test_controller_create_should_return_error_on_invalid_data(
+    client, products_url
+):
+    response = await client.post(products_url, json=invalid_product_data())
+
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert "detail" in response.json()
 
 
 async def test_controller_get_should_return_success(

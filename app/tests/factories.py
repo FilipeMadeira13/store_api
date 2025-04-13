@@ -2,6 +2,11 @@ def product_data():
     return {"name": "Iphone 14 Pro Max", "quantity": 10, "price": 8500, "status": True}
 
 
+# Cria função com dados inválidos
+def invalid_product_data():
+    return {"name": 10, "quantity": "Zero", "price": "Oito Mil", "status": True}
+
+
 def products_data():
     return [
         {"name": "Iphone 11 Pro Max", "quantity": 4, "price": 2500, "status": True},
