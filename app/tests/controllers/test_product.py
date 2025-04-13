@@ -17,7 +17,7 @@ async def test_controller_create_should_return_success(client, products_url):
     assert content == {
         "name": "Iphone 14 Pro Max",
         "quantity": 10,
-        "price": "8500",
+        "price": "7500",
         "status": True,
     }
 
@@ -46,7 +46,7 @@ async def test_controller_get_should_return_success(
         "id": str(product_inserted.id),
         "name": "Iphone 14 Pro Max",
         "quantity": 10,
-        "price": "8500",
+        "price": "7500",
         "status": True,
     }
 
