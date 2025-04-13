@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from pydantic import UUID4, BaseModel, Field, model_validator
-from bson import Decimal128  # type: ignore
+from bson import Decimal128
 
 
 class BaseSchemaMixin(BaseModel):

@@ -1,4 +1,4 @@
-from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from store.core.config import settings
 

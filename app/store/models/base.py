@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from bson import Decimal128  # type: ignore
+from bson import Decimal128
 import uuid
 from pydantic import UUID4, BaseModel, Field, model_serializer
 

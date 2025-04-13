@@ -1,9 +1,9 @@
 from store.models.product import ProductModel
-import pymongo  # type: ignore
+import pymongo
 from typing import List
 from uuid import UUID
 from store.schemas.product import ProductIn, ProductOut, ProductUpdate, ProductUpdateOut
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase  # type: ignore
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from store.db.mongo import db_client
 from store.core.exceptions import NotFoundException
 
@@ -33,10 +33,9 @@ class ProductUsecase:
         return [ProductOut(**item) async for item in self.collection.find()]
 
     async def update(self, id: UUID, body: ProductUpdate) -> ProductUpdateOut:
-        ProductUpdate(**body.model_dump(exclude_none=True))
         result = await self.collection.find_one_and_update(
             filter={"id": id},
-            update={"$set": body.model_dump()},
+            update={"$set": body.model_dump(exclude_none=True)},
             return_document=pymongo.ReturnDocument.AFTER,
         )
 
