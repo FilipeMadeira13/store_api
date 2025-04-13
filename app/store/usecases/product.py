@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from store.models.product import ProductModel
 import pymongo
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 from store.schemas.product import ProductIn, ProductOut, ProductUpdate, ProductUpdateOut
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
@@ -31,8 +31,33 @@ class ProductUsecase:
 
         return ProductOut(**result)
 
-    async def query(self) -> List[ProductOut]:
-        return [ProductOut(**item) async for item in self.collection.find()]
+    async def query(
+        self, min_price: Optional[float] = None, max_price: Optional[float] = None
+    ) -> List[ProductOut]:
+        try:
+            query_filter = {}
+
+            if min_price is not None or max_price is not None:
+                price_filter = {}
+
+                if min_price is not None:
+                    price_filter["$gt"] = min_price
+
+                if max_price is not None:
+                    price_filter["$lt"] = max_price
+
+                if price_filter:
+                    query_filter["price"] = price_filter
+
+            return [
+                ProductOut(**item) async for item in self.collection.find(query_filter)
+            ]
+        except Exception as err:
+            print(f"Error in filter_by_price endpoint: {str(err)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao filtrar produtos por preço: {str(err)}",
+            )
 
     async def update(self, id: UUID, body: ProductUpdate) -> ProductUpdateOut:
         update_data = body.model_dump(exclude_none=True)
