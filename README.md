@@ -84,6 +84,19 @@ As requisições passam pelos controllers, que recebem e respondem às chamadas 
 ```bash
 git clone https://github.com/FilipeMadeira13/store_api.git
 cd store_api/app
+```
+
+Antes de instalar as dependências, confirme a versão do Python na pasta `app/`:
+
+```bash
+python --version
+```
+
+A saída deve indicar **Python 3.12.x**. Se você usa pyenv, a versão selecionada pelo arquivo `.python-version` precisa estar instalada: esse arquivo seleciona a versão, mas não a instala automaticamente.
+
+Em seguida, instale as dependências:
+
+```bash
 poetry install --no-root
 ```
 
@@ -91,7 +104,7 @@ A opção `--no-root` instala as dependências sem instalar o próprio projeto c
 
 ### 2. Configure as variáveis de ambiente
 
-Edite o arquivo **`app/.env`**, localizado na pasta da aplicação. Para desenvolvimento local, utilize:
+Crie o arquivo **`app/.env`**, localizado na pasta da aplicação, caso ele não exista. Esse arquivo contém a configuração local e é ignorado pelo Git. Para desenvolvimento local, utilize:
 
 ```dotenv
 DATABASE_URL=mongodb://localhost:27017/store?uuidRepresentation=standard
